@@ -26,7 +26,11 @@ defmodule Doppelganger.Parse do
           "#{name}(#{args}) -> \n    #{body}. \n"
         end
 
-        def to_string(_), do: raise("remember to call it/1 to parse before to_string/1")
+        def to_string(_),
+          do:
+            raise(
+              "remember to call it/1 in order to parse before applying to_string/1 to a function"
+            )
       end
     end
 
@@ -74,16 +78,6 @@ defmodule Doppelganger.Parse do
   end
 
   defmodule Char do
-    defmodule Info do
-      defstruct [:name, :kvs]
-
-      defimpl String.Chars do
-        def to_string(%{name: name, kvs: kvs}) do
-          "record"
-        end
-      end
-    end
-
     def it(chars) do
       chars
       |> Enum.map(fn ch ->
@@ -103,10 +97,30 @@ defmodule Doppelganger.Parse do
   defmodule Struct do
     def it({:defstruct, [_line], [kvs]}) when is_list(kvs) do
     end
+
+    defmodule Info do
+      defstruct [:name, :kvs]
+
+      defimpl String.Chars do
+        def to_string(%{name: name, kvs: kvs}) do
+          with kvs <- kvs |> Enum.join(", \n") do
+            "-record(name,\n{#{kvs}\n})"
+          end
+        end
+
+        def to_string(_),
+          do:
+            raise(
+              "remember to call it/1 in order to parse before applying to_string/1 to a struct"
+            )
+      end
+    end
   end
 
   defmodule Behaviour do
-    nil
+    def it(bh) do
+      nil
+    end
   end
 
   defmodule Module do
@@ -143,6 +157,9 @@ defmodule Doppelganger.Parse do
 
           :defstruct ->
             Parse.Struct.it(el)
+
+          :use ->
+            Parse.Behaviour.it(el)
 
           type ->
             raise "#{type} not supported"
