@@ -1,6 +1,3 @@
 defmodule GlobalsTest do
-  
-  @mod __MODULE__
-
-  def test, do: @mod
+  def get_module, do: __MODULE__
 end

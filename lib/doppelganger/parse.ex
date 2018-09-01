@@ -1,8 +1,6 @@
 defmodule Doppelganger.Parse do
   alias __MODULE__
 
-  ## TODO: handle defp situation and def exports
-
   ## TODO: handle spec parsing
 
   @moduledoc """
