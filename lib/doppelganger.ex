@@ -23,11 +23,11 @@ defmodule Doppelganger do
          file <- File.read!(@path) do
       {:ok, ast} = Code.string_to_quoted(file)
 
-      ast |> to_erlang_code()
+      ast |> to_erlang()
     end
   end
 
-  def to_erlang_code(ast) do
+  def to_erlang(ast) do
     with module <- Parse.Module.name(ast),
          body <- Parse.Module.it(ast),
          fname <- module <> ".erl",
@@ -40,5 +40,9 @@ defmodule Doppelganger do
           IO.puts(reason)
       end
     end
+  end
+
+  def to_elixir(_) do
+    raise "to be implemented"
   end
 end

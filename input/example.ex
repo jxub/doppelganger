@@ -1,5 +1,6 @@
 defmodule Data.Example do
-  use GenServer
+  # use GenServer
+  # protocol String.Chars not implemented for {:use, [line: 2], [{:__aliases__, [line: 2], [:GenServer]}]}
   
   def add(a, b) do
     a + b
@@ -25,5 +26,6 @@ defmodule Data.Example do
     {:ok, c}
   end
 
-  defstruct [:name, :age]
+  # defstruct [:name, :age]
+  # protocol String.Chars not implemented for {:defstruct, [line: 29], [[:name, :age]]}
 end
