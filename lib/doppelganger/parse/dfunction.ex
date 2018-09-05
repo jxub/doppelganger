@@ -1,7 +1,7 @@
-defmodule Doppelganger.Parse.Function do
+defmodule Doppelganger.Parse.DFunction do
   alias Doppelganger.Parse.{
-    Char,
-    Line
+    DChar,
+    DLine
   }
 
   defstruct [:name, :args, :body, :public]
@@ -37,7 +37,7 @@ defmodule Doppelganger.Parse.Function do
   def body(b) do
     with lines <- b |> Macro.to_string() |> String.split("\n"),
          tokens <- lines |> tokenize() do
-      Enum.join(lines, ",\n") <> ".\n\n"
+      Enum.join(lines, ",\n")
     end
   end
 

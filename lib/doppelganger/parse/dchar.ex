@@ -1,4 +1,4 @@
-defmodule Doppelganger.Parse.Char do
+defmodule Doppelganger.Parse.DChar do
   defstruct [:self, :type]
 
   def it(char) do

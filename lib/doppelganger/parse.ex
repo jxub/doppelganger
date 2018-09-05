@@ -5,11 +5,11 @@ defmodule Doppelganger.Parse do
 
   @moduledoc """
   Namespace for all parsing logic
-  
+
   Also handle:
 
   stdlib functions translation
-  behaviour translations
+  DBehaviour translations
   records
   """
 

@@ -1,5 +1,5 @@
 defmodule Data.Example do
-  # use GenServer
+  use GenServer
   # protocol String.Chars not implemented for {:use, [line: 2], [{:__aliases__, [line: 2], [:GenServer]}]}
   
   def add(a, b) do

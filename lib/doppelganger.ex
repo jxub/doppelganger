@@ -12,7 +12,7 @@ defmodule Doppelganger do
       :world
 
   """
-  alias Doppelganger.Parse
+  alias Doppelganger.Parse.DModule
 
   @path "input/example.ex"
   @out_dir "output"
@@ -28,8 +28,8 @@ defmodule Doppelganger do
   end
 
   def to_erlang(ast) do
-    with module <- Parse.Module.name(ast),
-         body <- Parse.Module.it(ast),
+    with module <- DModule.name(ast),
+         body <- DModule.it(ast) |> to_string(),
          fname <- module <> ".erl",
          fpath <- Path.join(@out_dir, fname) |> Path.absname() do
       case File.write(fpath, body) do

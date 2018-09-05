@@ -1,8 +1,16 @@
-defmodule Doppelganger.Parse.Module do
+defmodule Doppelganger.Parse.DModule do
+  alias Doppelganger.Parse.{
+    DBehaviour,
+    DExports,
+    DFunction,
+    DStruct
+  }
+
   defstruct [:name, :body, :exports]
 
   defimpl String.Chars do
     def to_string(%{name: name, body: body, exports: exports}) do
+      IO.inspect(exports, label: "in to string exports")
       "-module(#{name}).\n\n-export([\n#{exports}\n]).\n\n#{body}"
     end
 
@@ -11,6 +19,7 @@ defmodule Doppelganger.Parse.Module do
     end
   end
 
+  @spec name(Tuple.t()) :: String.t()
   def name(ast) do
     with {:defmodule, _line, [{:__aliases__, _line1, aliases}, _body]} <- ast do
       aliases
@@ -22,6 +31,7 @@ defmodule Doppelganger.Parse.Module do
     end
   end
 
+  @spec body(Tuple.t()) :: String.t()
   def body(ast) do
     with {_mod, _line, [_aliases, module_body]} <- ast,
          [do: {_block, _l, elements}] <- module_body do
@@ -34,61 +44,27 @@ defmodule Doppelganger.Parse.Module do
   end
 
   def delegate(el) do
-    with el1 <- el |> Tuple.to_list(),
-         mod <- el1 |> Enum.at(0) do
-      case mod do
-        :def ->
-          Parse.Function.it(el)
-
-        :defp ->
-          Parse.Function.it(el)
-
-        :defstruct ->
-          Parse.Struct.it(el)
-
-        :use ->
-          Parse.Behaviour.it(el)
-
-        type ->
-          raise "#{type} not supported"
-      end
+    with mod <- el |> elem(0) do
+      delegate(mod, el)
     end
   end
 
-  def exports(ast, exports \\ []) do
-    with {_mod, _line, [_aliases, module_body]} <- ast,
-         [do: {_block, _l, elements}] <- module_body do
-      elements
-      |> IO.inspect()
-      |> Enum.reject(fn el ->
-        with type <- el |> Tuple.to_list() |> Enum.at(0) do
-          case type do
-            :def ->
-              true
+  def delegate(:def, el), do: DFunction.it(el)
+  def delegate(:defp, el), do: DFunction.it(el)
+  def delegate(:defstruct, el), do: DStruct.it(el)
+  def delegate(:use, el), do: DBehaviour.it(el)
+  def delegate(other, _el), do: raise("#{other} not supported")
 
-            :defp ->
-              true
-
-            _ ->
-              false
-          end
-        end
-      end)
-      |> IO.inspect()
-      |> Enum.map(fn fun -> Parse.Function.export(fun) end)
-      |> IO.inspect()
-      |> Enum.reject(fn ex -> ex == nil end)
-      |> Enum.sort()
-      # left-pad
-      |> Enum.map(fn ex -> "    " <> ex end)
-      |> Enum.join(",\n")
-    end
+  def exports(ast) do
+    ast
+    |> DExports.it()
   end
 
   def it(ast) do
     with name <- name(ast),
          body <- body(ast),
          exports <- exports(ast) do
+      IO.inspect(exports, label: "expooooorts")
       %__MODULE__{name: name, body: body, exports: exports}
     end
   end
