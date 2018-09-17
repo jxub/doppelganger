@@ -9,7 +9,7 @@ defmodule Doppelganger.Parse do
   Also handle:
 
   stdlib functions translation
-  DBehaviour translations
+  DoppelBehaviour translations
   records
   """
 

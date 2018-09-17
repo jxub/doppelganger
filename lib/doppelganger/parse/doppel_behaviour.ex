@@ -1,4 +1,4 @@
-defmodule Doppelganger.Parse.DBehaviour do
+defmodule Doppelganger.Parse.DoppelBehaviour do
   defstruct [:erl_behaviour]
 
   def it({:use, _line, [{:__aliases__, _line1, [behaviour]}]}) do
@@ -13,7 +13,6 @@ defmodule Doppelganger.Parse.DBehaviour do
     # else raise detailed exception
     behaviour
   end
-
 
   defp get_requred_callbacks(:GenServer) do
     # callback function: arity

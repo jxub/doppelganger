@@ -1,5 +1,5 @@
-defmodule Doppelganger.Parse.DLine do
-  alias Doppelganger.Parse.DChar
+defmodule Doppelganger.Parse.DoppelLine do
+  alias Doppelganger.Parse.DoppelChar
 
   def it(line) do
     with chars <- line |> String.split() do
@@ -8,7 +8,7 @@ defmodule Doppelganger.Parse.DLine do
   end
 
   defp parse([char | chars], result) do
-    with result <- result <> DChar.it(char) do
+    with result <- result <> DoppelChar.it(char) do
       parse(chars, result)
     end
   end

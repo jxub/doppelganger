@@ -1,9 +1,9 @@
-defmodule Doppelganger.Parse.DModule do
+defmodule Doppelganger.Parse.DoppelModule do
   alias Doppelganger.Parse.{
-    DBehaviour,
-    DExports,
-    DFunction,
-    DStruct
+    DoppelBehaviour,
+    DoppelExports,
+    DoppelFunction,
+    DoppelStruct
   }
 
   defstruct [:name, :body, :exports]
@@ -49,15 +49,15 @@ defmodule Doppelganger.Parse.DModule do
     end
   end
 
-  def delegate(:def, el), do: DFunction.it(el)
-  def delegate(:defp, el), do: DFunction.it(el)
-  def delegate(:defstruct, el), do: DStruct.it(el)
-  def delegate(:use, el), do: DBehaviour.it(el)
+  def delegate(:def, el), do: DoppelFunction.it(el)
+  def delegate(:defp, el), do: DoppelFunction.it(el)
+  def delegate(:defstruct, el), do: DoppelStruct.it(el)
+  def delegate(:use, el), do: DoppelBehaviour.it(el)
   def delegate(other, _el), do: raise("#{other} not supported")
 
   def exports(ast) do
     ast
-    |> DExports.it()
+    |> DoppelExports.it()
   end
 
   def it(ast) do

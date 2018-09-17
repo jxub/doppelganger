@@ -1,7 +1,9 @@
-defmodule Doppelganger.Parse.DFunction do
+defmodule Doppelganger.Parse.DoppelFunction do
+  
+  alias Doppelganger.Scope
   alias Doppelganger.Parse.{
-    DChar,
-    DLine
+    DoppelChar,
+    DoppelLine
   }
 
   defstruct [:name, :args, :body, :public]

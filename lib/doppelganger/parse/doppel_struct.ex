@@ -1,4 +1,4 @@
-defmodule Doppelganger.Parse.DStruct do
+defmodule Doppelganger.Parse.DoppelStruct do
   defstruct [:name, :kvs]
 
   def it({:defstruct, [_line], [kvs]}) when is_list(kvs) do

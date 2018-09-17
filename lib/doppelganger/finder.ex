@@ -10,10 +10,8 @@ defmodule Doppelganger.Finder do
   end
 
   def run({elem, code}) do
-    
   end
 
   def run({:struct, code}) do
-    
   end
 end
