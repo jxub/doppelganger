@@ -7,7 +7,7 @@
     sum_list/1
 ]).
 
--behaviour(gen_fsm).
+-behaviour(gen_server).
 
 add(A, B) -> 
     a + b. 

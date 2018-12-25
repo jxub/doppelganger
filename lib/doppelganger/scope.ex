@@ -4,7 +4,7 @@ defmodule Doppelganger.Scope do
   # Client
 
   def start_link([]) do
-    GenServer.start_link(__MODULE__, [] name: __MODULE__)
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def add(pid, variable) do
