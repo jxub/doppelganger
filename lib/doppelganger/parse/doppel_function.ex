@@ -1,6 +1,6 @@
 defmodule Doppelganger.Parse.DoppelFunction do
-  
   alias Doppelganger.Scope
+
   alias Doppelganger.Parse.{
     DoppelChar,
     DoppelLine
@@ -32,8 +32,44 @@ defmodule Doppelganger.Parse.DoppelFunction do
   def args(a) do
     a
     |> Enum.map(fn arg -> with {name, _line, _default} <- arg, do: Atom.to_string(name) end)
-    |> Enum.map(fn arg -> String.capitalize(arg) end)
+    |> Enum.map(fn arg -> arg |> argument() end)
     |> Enum.join(", ")
+  end
+
+  def argument(a) when is_atom(a) do
+    a |> Atom.to_string() |> String.downcase()
+  end
+
+  def argument(a) when is_binary(a) do
+    a |> String.capitalize()
+  end
+
+  def argument(a) when is_list(a) do
+    with [{op, [_line], elems}] <- a do
+      case op do
+        :| ->
+          with [elem, rest] <- elems,
+               {el, _line, val} <- elem,
+               {el1, _line, val1} <- rest,
+               els <- argument(el),
+               els1 <- argument(el1) do
+            "[" <> els <> "|" <> els1 <> "]"
+          end
+
+        _ ->
+          raise "implement in DoppelFunction.argument/1 (same logic as above?"
+      end
+    end
+  end
+
+  def argument(a) when is_tuple(a) do
+    with {item, {item2, _line, _val}} <- a do
+      "{" <> argument(item) <> ", " <> argument(item2) <> "}"
+    end
+  end
+
+  def argument(a) when is_map(a) do
+    raise "implement argument for maps"
   end
 
   def body(b) do

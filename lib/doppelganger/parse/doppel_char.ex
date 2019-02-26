@@ -1,14 +1,16 @@
 defmodule Doppelganger.Parse.DoppelChar do
   defstruct [:self, :type]
 
-  def it(char) do
-    case String.starts_with?(char, ":") do
-      true ->
-        %__MODULE__{self: char |> String.slice(1..1500), type: :atom}
+  def it(char) when is_atom(char) do
+    %__MODULE__{self: char |> Atom.to_string(), type: :atom}
+  end
 
-      false ->
-        %__MODULE__{self: char |> String.capitalize(), type: :value}
-    end
+  def it(char) when is_binary(char) do
+    %__MODULE__{self: char |> String.capitalize(), type: :value}
+  end
+
+  def it(_) do
+    raise Doppelganger.Util.parse_error(__MODULE__)
   end
 
   defmodule Atom do
@@ -35,11 +37,11 @@ defmodule Doppelganger.Parse.DoppelChar do
     defstruct [:module, :fun]
   end
 
-  def function?(ch) do
+  def function?(_ch) do
   end
 
   defimpl String.Chars do
-    def to_string(%{self: self, type: type}) do
+    def to_string(%{self: self, type: _type}) do
       "#{self}"
     end
 

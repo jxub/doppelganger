@@ -1,6 +1,7 @@
 defmodule Doppelganger.Parse.DoppelModule do
   alias Doppelganger.Parse.{
     DoppelBehaviour,
+    DoppelVariable,
     DoppelExports,
     DoppelFunction,
     DoppelStruct
@@ -38,21 +39,27 @@ defmodule Doppelganger.Parse.DoppelModule do
       elements
       |> IO.inspect()
       |> Enum.map(&delegate/1)
-      |> Enum.map(fn el -> to_string(el) end)
+      |> Enum.map(&to_string/1)
       |> Enum.join("\n")
     end
   end
 
   def delegate(el) do
-    with mod <- el |> elem(0) do
-      delegate(mod, el)
+    try do
+      with mod <- el |> elem(0) do
+        IO.inspect(el, label: "mod")
+        delegate(mod, el)
+      end
+    rescue
+      ArgumentError -> IO.inspect(el, label: "error here")
     end
-  end
+    end
 
   def delegate(:def, el), do: DoppelFunction.it(el)
   def delegate(:defp, el), do: DoppelFunction.it(el)
-  def delegate(:defstruct, el), do: DoppelStruct.it(el)
+  def delegate(:defstruct, el), do: el |> IO.inspect(label: "struct") |> DoppelStruct.it()
   def delegate(:use, el), do: DoppelBehaviour.it(el)
+  def delegate(:@, el), do: DoppelVariable.it(el)
   def delegate(other, _el), do: raise("#{other} not supported")
 
   def exports(ast) do
@@ -64,7 +71,9 @@ defmodule Doppelganger.Parse.DoppelModule do
     with name <- name(ast),
          body <- body(ast),
          exports <- exports(ast) do
-      IO.inspect(exports, label: "expooooorts")
+      IO.inspect(name, label: "name")
+      IO.inspect(body, label: "body")
+      IO.inspect(exports, label: "exports")
       %__MODULE__{name: name, body: body, exports: exports}
     end
   end
