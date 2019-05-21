@@ -37,7 +37,7 @@ defmodule Doppelganger.Parse.DoppelModule do
     with {_mod, _line, [_aliases, module_body]} <- ast,
          [do: {_block, _l, elements}] <- module_body do
       elements
-      |> IO.inspect()
+      |> IO.inspect(label: "elements")
       |> Enum.map(&delegate/1)
       |> Enum.map(&to_string/1)
       |> Enum.join("\n")
@@ -45,6 +45,7 @@ defmodule Doppelganger.Parse.DoppelModule do
   end
 
   def delegate(el) do
+    IO.inspect(el, label: "before bug")
     try do
       with mod <- el |> elem(0) do
         IO.inspect(el, label: "mod")
@@ -53,7 +54,7 @@ defmodule Doppelganger.Parse.DoppelModule do
     rescue
       ArgumentError -> IO.inspect(el, label: "error here")
     end
-    end
+  end
 
   def delegate(:def, el), do: DoppelFunction.it(el)
   def delegate(:defp, el), do: DoppelFunction.it(el)
